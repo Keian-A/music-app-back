@@ -47,6 +47,8 @@ app.post('/signin', async (req, res) => {
         if (flag) {
             // Need to create tokens and send one back here
             res.send('YEP');
+        } else {
+            res.status(404).send('Incorrect credentials provided.');
         }
     } else {
         res.status(404).send('Incorrect credentials provided.');
