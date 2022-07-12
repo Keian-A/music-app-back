@@ -39,7 +39,6 @@ app.get('/', (req, res) => {
 app.post('/signup', async (req, res) => {
     // Only creates a record if a unique email is input
     let alreadyExists = await Users.find({ email: req.body.email });
-    console.log(alreadyExists);
     if (alreadyExists.length === 0) {
         req.body.token = jwt.sign({ email: req.body.email }, SECRET);
         req.body.password = await bcrypt.hash(req.body.password, 10);
