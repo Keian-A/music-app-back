@@ -35,9 +35,15 @@ app.get('/', (req, res) => {
 });
 
 app.post('/signup', async (req, res) => {
-    req.body.password = await bcrypt.hash(req.body.password, 10);
-    let result = await Users.create(req.body);
-    res.json(result);
+    // Only creates a record if a unique email is input
+    let alreadyExists = await Users.find({ email: req.body.email });
+    if (!alreadyExists) {
+        req.body.password = await bcrypt.hash(req.body.password, 10);
+        let result = await Users.create(req.body);
+        res.json(result);
+    } else {
+        res.status(500).send("A user with that email already exists.");
+    }
 });
 
 app.post('/signin', async (req, res) => {
