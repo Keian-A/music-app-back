@@ -7,7 +7,9 @@ const cors = require('cors');
 const app = express();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const PORT = process.env.PORT;
+const SECRET = process.env.SECRET;
 
 // Esoteric imports
 const Users = require('./src/schema/Users.js');
@@ -37,7 +39,9 @@ app.get('/', (req, res) => {
 app.post('/signup', async (req, res) => {
     // Only creates a record if a unique email is input
     let alreadyExists = await Users.find({ email: req.body.email });
-    if (!alreadyExists) {
+    console.log(alreadyExists);
+    if (alreadyExists.length === 0) {
+        req.body.token = jwt.sign({ email: req.body.email }, SECRET);
         req.body.password = await bcrypt.hash(req.body.password, 10);
         let result = await Users.create(req.body);
         res.json(result);
